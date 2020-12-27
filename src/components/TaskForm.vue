@@ -27,22 +27,23 @@
             <option value="finished">Finished</option>
             <option value="open">Open</option>
         </select>
-        <Button text = "CreateTask" v-if="mode == 'create'" @click="createTask" />
-        <Button text = "UpdateTask" v-if="mode == 'edit'" @click="updateTask" />
+        <Button text = "Create Task" v-if="mode == 'create'" @click="createTask" />
+        <Button text = "Update Task" v-if="mode == 'edit'" @click="updateTask" />
         <Button :text = "deleteText" v-if="mode == 'edit'" @click="deleteTask" class="danger" />
         <Button text = "Cancel" @click="hideForm" id="cancelButton" />
-
     </section>
     <section class="errorMessage">
+        {{error}}
     </section>
 </template>
 
 <script>
-import Button from './Button.vue'
+import Button from './Button.vue';
+import {generateId} from "../assets/js/utils.js";
 
 export default {
     name: "TaskForm",
-    emits: ['hideForm', 'delete'],
+    emits: ['hideForm', 'deleteTask', 'updateTask', 'createTask', 'updateTask'],
     components: {
         Button
     },
@@ -56,16 +57,40 @@ export default {
             error: null,
             titleInput: "",
             descInput: "",
-            prioInput: "medium",
+            prioInput: "mediumPrio",
             statusInput: "open",
         }
     },
     methods: {
         createTask() {
-            console.log("create task!");
+            if (!this.titleInput) {
+                this.error = "There is no title";
+                return;
+            }
+            const task = {   
+                id : generateId(10),
+                title: this.titleInput,
+                description: this.descInput,
+                prio: this.prioInput,
+                status: this.statusInput,
+            };
+            this.$emit("createTask", task);
+            this.hideForm();
         },
         updateTask() {
-            console.log("update task!");
+            if (!this.titleInput) {
+                this.error = "There is no title";
+                return;
+            }
+            const updatedTask = {
+                id: this.task.id,
+                title: this.titleInput,
+                description: this.descInput,
+                prio: this.prioInput,
+                status: this.statusInput,
+            };
+            this.$emit("updateTask", updatedTask);
+            this.hideForm();
         },
         deleteTask() {
             if (this.deleteText == "Delete Task") {
@@ -73,7 +98,7 @@ export default {
             } else {
                 this.editingTask = false;
                 this.hideForm();
-                this.$emit("delete", this.task.id);
+                this.$emit("deleteTask", this.task);
             }
         },
         hideForm() {
@@ -82,12 +107,17 @@ export default {
         }
     },
     mounted() {
+        this.deleteText = "Delete Task";
         if (this.mode == 'edit' && this.task) {
             this.titleInput = this.task.title;
             this.descInput =  this.task.description;
             this.prioInput =  this.task.prio;
             this.statusInput =  this.task.status;
-            this.deleteText = "Delete Task";
+        } else {
+            this.titleInput = "";
+            this.descInput = "";
+            this.statusInput = "mediumPrio";
+            this.statusInput = "open";
         }
     }
 }

@@ -23,55 +23,25 @@
 export default {
     data() {
         return {
-            tasks: [
-                {
-                    id: 'XZBS45NF4W',
-                    title: "Reduce your carbon footprint",
-                    description:
-                        "For example by choosing a vegan diet, going by bike more often, avoiding planes, buying only stuff you actually need. Get active!",
-                    prio: "highPrio",
-                    status: "open",
-                },
-                {
-                    id: 'HSUBXOX2D8',
-                    title: "Educate yourself about structural racism",
-                    description: "... because it is still deeply rooted in our society.",
-                    prio: "mediumPrio",
-                    status: "open",
-                },
-                {
-                    id: 'JYAXT4L8EO',
-                    title: "Try to be a nice person",
-                    description: "You also like to be around nice people, right? :)",
-                    prio: "lowPrio",
-                    status: "finished",
-                },
-            ],
+           
         }
+    },
+    props: {
+        tasks: Object,
     },
     methods: {
         getIndex(task) {
-            return this.tasks.findIndex((x) => x === task);
+            return this.tasks.findIndex((x) => x.id === task.id);
         },
         moveTaskUp(task) {
-            const index = this.getIndex(task);
-            if (index === 0) return;
-            this.tasks.splice(index, 1);
-            this.tasks.splice(index - 1, 0, task);
+            this.$emit("moveTaskUp", task);
         },
         moveTaskDown(task) {
-            const index = this.getIndex(task);
-            if (index === this.tasks.length - 1) return;
-            this.tasks.splice(index, 1);
-            this.tasks.splice(index + 1, 0, task);
+            this.$emit("moveTaskDown", task)          
         },
         edit(task) {
             this.$emit("edit", task);
         },
-        deleteTask(id) {
-            console.log("hello from tasklist");
-            console.log(id);
-        }
     }
 }
 </script>
