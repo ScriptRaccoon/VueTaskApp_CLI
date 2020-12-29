@@ -52,7 +52,7 @@ import { generateId } from "../assets/js/utils.js";
 
 export default {
   name: "TaskForm",
-  emits: ["hideForm", "deleteTask", "updateTask", "createTask", "updateTask"],
+  emits: ["hideForm", "deleteTask", "updateTask", "createTask"],
   components: {
     Button,
   },
