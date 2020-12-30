@@ -5,48 +5,27 @@
 
 <template>
     <Header text="Vue Task App (CLI Version)" />
-    <router-view />
     <main id="container">
-        <TaskList
-            @edit="showForm"
-            v-if="!formMode"
+        <router-view
             :tasks="tasks"
-            @moveTaskUp="moveTaskUp"
-            @moveTaskDown="moveTaskDown"
+            @down="moveTaskDown"
+            @up="moveTaskUp"
+            @edit="edit"
+            @task="createTask"
         />
-        <TaskForm
-            v-if="formMode"
-            :mode="formMode"
-            :task="currentTask"
-            @hideForm="hideForm"
-            @deleteTask="deleteTask"
-            @createTask="createTask"
-            @updateTask="updateTask"
-        />
-        <div class="centered" v-if="!formMode">
-            <Button text="Add New Task" @click="showForm" />
-        </div>
     </main>
 </template>
 
 <script>
     import Header from "./components/Header.vue";
-    import Button from "./components/Button.vue";
-    import TaskList from "./components/TaskList.vue";
-    import TaskForm from "./components/TaskForm.vue";
 
     export default {
         name: "App",
         components: {
             Header,
-            Button,
-            TaskList,
-            TaskForm,
         },
         data() {
             return {
-                formMode: null,
-                currentTask: null,
                 tasks: [
                     {
                         id: "XZBS45NF4W",
@@ -77,24 +56,7 @@
         },
         methods: {
             getIndex(task) {
-                return this.tasks.findIndex((x) => x.id == task.id);
-            },
-            showForm(task) {
-                if (task.id) {
-                    this.formMode = "edit";
-                    this.currentTask = task;
-                } else {
-                    this.formMode = "create";
-                    this.currentTask = null;
-                }
-            },
-            hideForm() {
-                this.formMode = null;
-                this.currentTask = null;
-            },
-            deleteTask(task) {
-                const index = this.getIndex(task);
-                this.tasks.splice(index, 1);
+                return this.tasks.findIndex((x) => x.id === task.id);
             },
             moveTaskUp(task) {
                 const index = this.getIndex(task);
@@ -108,14 +70,27 @@
                 this.tasks.splice(index, 1);
                 this.tasks.splice(index + 1, 0, task);
             },
+            edit(task) {
+                console.log("want to edit task with id", task.id);
+                // todo
+            },
             createTask(task) {
                 this.tasks.push(task);
             },
-            updateTask(task) {
-                const index = this.getIndex(task);
-                this.tasks[index] = task;
-            },
         },
+        // methods: {
+        //     deleteTask(task) {
+        //         const index = this.getIndex(task);
+        //         this.tasks.splice(index, 1);
+        //     },
+        //     createTask(task) {
+        //         this.tasks.push(task);
+        //     },
+        //     updateTask(task) {
+        //         const index = this.getIndex(task);
+        //         this.tasks[index] = task;
+        //     },
+        // },
     };
 </script>
 
