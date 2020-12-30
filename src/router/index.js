@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TaskList from "../views/TaskList.vue";
-import TaskUpdate from "../views/TaskUpdate.vue";
+import TaskEdit from "../views/TaskEdit.vue";
 import TaskCreate from "../views/TaskCreate.vue";
 
 const routes = [
@@ -16,9 +16,14 @@ const routes = [
         component: TaskCreate,
     },
     {
+        path: "/edit/",
+        redirect: "/",
+    },
+    {
         path: "/edit/:id",
         name: "edit",
-        component: TaskUpdate,
+        component: TaskEdit,
+        props: true,
     },
 ];
 

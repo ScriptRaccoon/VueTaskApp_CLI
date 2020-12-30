@@ -30,9 +30,10 @@
             <option value="finished">Finished</option>
             <option value="open">Open</option>
         </select>
-        <Button text="Update Task" @click="updateTask" />
+
+        <Button text="Edit Task" @click="editTask" />
         <Button :text="deleteText" @click="deleteTask" class="danger" />
-        <Button text="Cancel" @click="hideForm" id="cancelButton" />
+        <Button text="Cancel" @click="cancel" id="cancelButton" />
     </section>
     <section class="errorMessage">
         {{ error }}
@@ -44,13 +45,11 @@
 
     export default {
         name: "TaskForm",
-        emits: ["hideForm", "deleteTask", "updateTask"],
+        emits: ["delete", "edit"],
         components: {
             Button,
         },
-        props: {
-            task: Object,
-        },
+        props: ["id", "tasks"],
         data() {
             return {
                 deleteText: "Delete Task",
@@ -62,41 +61,49 @@
             };
         },
         methods: {
-            updateTask() {
+            editTask() {
                 if (!this.titleInput) {
                     this.error = "There is no title";
                     return;
                 }
-                const updatedTask = {
-                    id: this.task.id,
+                const editedTask = {
+                    id: this.id,
                     title: this.titleInput,
                     description: this.descInput,
                     prio: this.prioInput,
                     status: this.statusInput,
                 };
-                this.$emit("updateTask", updatedTask);
-                this.hideForm();
+                this.$emit("edit", editedTask);
+                this.cancel();
             },
             deleteTask() {
                 if (this.deleteText == "Delete Task") {
                     this.deleteText = "Are you sure?";
                 } else {
                     this.editingTask = false;
-                    this.hideForm();
-                    this.$emit("deleteTask", this.task);
+                    this.$emit("delete", this.task);
+                    this.cancel();
                 }
             },
-            hideForm() {
-                this.error = null;
-                this.$emit("hideForm");
+            cancel() {
+                this.$router.push({ name: "list" });
+            },
+        },
+        computed: {
+            task() {
+                return this.tasks.find((task) => task.id === this.id);
             },
         },
         mounted() {
             this.deleteText = "Delete Task";
-            this.titleInput = this.task.title;
-            this.descInput = this.task.description;
-            this.prioInput = this.task.prio;
-            this.statusInput = this.task.status;
+            if (this.task) {
+                this.titleInput = this.task.title;
+                this.descInput = this.task.description;
+                this.prioInput = this.task.prio;
+                this.statusInput = this.task.status;
+            } else {
+                this.cancel();
+            }
         },
     };
 </script>

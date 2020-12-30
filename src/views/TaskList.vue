@@ -21,7 +21,7 @@
             <i
                 class="control fas fa-edit"
                 title="Edit your task"
-                @click="$emit('edit', task)"
+                @click="edit(task)"
             ></i>
             <div class="taskContent" @click="edit(task)">
                 <h3 class="taskTitle">{{ task.title }}</h3>
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="centered">
-        <Button text="Add New Task" @click="$router.push({ name: 'create' })" />
+        <Button text="Add New Task" @click="create" />
     </div>
 </template>
 
@@ -41,8 +41,16 @@
 
     export default {
         props: ["tasks"],
-        emits: ["edit", "up", "down"],
+        emits: ["up", "down"],
         components: { Button },
+        methods: {
+            edit(task) {
+                this.$router.push({ name: "edit", params: { id: task.id } });
+            },
+            create() {
+                this.$router.push({ name: "create" });
+            },
+        },
     };
 </script>
 

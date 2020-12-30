@@ -1,8 +1,3 @@
-<!-- <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div> -->
-
 <template>
     <Header text="Vue Task App (CLI Version)" />
     <main id="container">
@@ -10,7 +5,8 @@
             :tasks="tasks"
             @down="moveTaskDown"
             @up="moveTaskUp"
-            @edit="edit"
+            @edit="editTask"
+            @delete="deleteTask"
             @task="createTask"
         />
     </main>
@@ -70,27 +66,18 @@
                 this.tasks.splice(index, 1);
                 this.tasks.splice(index + 1, 0, task);
             },
-            edit(task) {
-                console.log("want to edit task with id", task.id);
-                // todo
+            editTask(editedTask) {
+                const index = this.getIndex(editedTask);
+                this.tasks[index] = editedTask;
             },
             createTask(task) {
                 this.tasks.push(task);
             },
+            deleteTask(task) {
+                const index = this.getIndex(task);
+                this.tasks.splice(index, 1);
+            },
         },
-        // methods: {
-        //     deleteTask(task) {
-        //         const index = this.getIndex(task);
-        //         this.tasks.splice(index, 1);
-        //     },
-        //     createTask(task) {
-        //         this.tasks.push(task);
-        //     },
-        //     updateTask(task) {
-        //         const index = this.getIndex(task);
-        //         this.tasks[index] = task;
-        //     },
-        // },
     };
 </script>
 
